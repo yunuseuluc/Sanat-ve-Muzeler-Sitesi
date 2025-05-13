@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sanat ve Müzeler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=Cormorant+Garamond:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Cormorant Garamond', serif;
+            background-image: url('/media/arkaplan2.jpg'); 
+            background-size: cover;
+            background-attachment: fixed;
+            color: #3b2f1b;
+        }
+
+        header {
+            position: fixed;
+            top: 20px;
+            left: 30px;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #3b2f1b;
+            background-color: rgba(255, 248, 220, 0.8);
+            padding: 10px 15px;
+            border: 2px solid #8b7e66;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .logo:hover {
+            background-color: rgba(222, 184, 135, 0.9);
+        }
+
+        .overlay {
+            max-width: 1200px;
+            margin: 100px auto 50px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 52px;
+            font-family: 'Cinzel Decorative', serif;
+            color: #2e1f0f;
+            margin-bottom: 5px;
+        }
+
+        .slogan {
+            text-align: center;
+            font-size: 22px;
+            font-style: italic;
+            margin-bottom: 30px;
+            color: #4d3926;
+        }
+
+        .dropdown {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            background-color: #fdf6e3;
+            color: #3b2f1b;
+            border: 1px solid #8b7e66;
+        }
+
+        .muze-kutulari {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .muze {
+            background-color: rgba(255, 248, 220, 0.85);
+            border: 1px solid #d2b48c;
+            border-radius: 10px;
+            box-shadow: 0 6px 16px rgba(100, 80, 50, 0.2);
+            padding: 20px;
+            width: 280px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .muze:hover {
+            transform: scale(1.02);
+        }
+
+        .muze img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #c2a67d;
+            margin-bottom: 12px;
+        }
+
+        .muze h3 {
+            font-size: 20px;
+            color: #4b3b2a;
+            margin-bottom: 8px;
+        }
+
+        .muze p {
+            font-size: 16px;
+            color: #5e4c36;
+        }
+
+        .muze a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #6b4e2e;
+            font-weight: bold;
+        }
+
+        .muze a:hover {
+            color: #8b5e3c;
+        }
+
+        /* Sütun görselleri */
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+            background-image: url('/media/sutun_sol.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            z-index: -1;
+        }
+
+        body::after {
+            right: 0;
+            background-image: url('/media/sutun_sag.png');
+        }
+
+        body::before {
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <a href="{% url 'anasayfa' %}" class="logo">Anasayfa</a>
+</header>
+
+<div class="overlay">
+    <h1>SANAT VE MÜZELER</h1>
+    <div class="slogan">Şehrini seç, kültürü keşfet.</div>
+
+    <div class="dropdown">
+        <form method="GET">
+            <select name="sehir" onchange="this.form.submit()">
+                <option value="">Şehir Seçin</option>
+                {% for sehir in sehirler %}
+                    <option value="{{ sehir.id }}" {% if sehir.id == secilen_sehir.id %}selected{% endif %}>
+                        {{ sehir.ad }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    <div class="muze-kutulari">
+        {% for muze in muze_listesi %}
+            <div class="muze">
+                <img src="{{ muze.resim.url }}" alt="{{ muze.ad }}">
+                <h3>{{ muze.ad }}</h3>
+                <p>{{ muze.aciklama|truncatewords:15 }}</p>
+                <a href="{% url 'muze_detay' muze.id %}">Detaylar</a>
+            </div>
+        {% empty %}
+            <p>Seçilen şehirde müze bulunamadı.</p>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
